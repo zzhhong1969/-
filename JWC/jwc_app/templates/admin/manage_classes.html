@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}班级管理{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">班级管理</h1>
+    
+    <!-- 操作面板 -->
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3 class="panel-title">班级列表</h3>
+                </div>
+                <div class="col-md-6 text-right">
+                    <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#addClassModal">
+                        <span class="glyphicon glyphicon-plus"></span> 添加班级
+                    </button>
+{#                    <a href="{% url 'admin/export_classes' %}" class="btn btn-info btn-sm">#}
+{#                        <span class="glyphicon glyphicon-download"></span> 导出Excel#}
+{#                    </a>#}
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel-body">
+            <!-- Excel导入表单 -->
+            <form method="post" enctype="multipart/form-data" class="form-inline" style="margin-bottom: 20px;">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="sr-only">Excel文件</label>
+                    <input type="file" name="excel_file" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <span class="glyphicon glyphicon-upload"></span> 批量导入
+                </button>
+{#                <small class="text-muted" style="margin-left: 10px;">#}
+{#                    请使用<a href="{% url 'download_class_template' %}">模板文件</a>#}
+{#                </small>#}
+            </form>
+            
+            <!-- 班级表格 -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr class="info">
+                            <th>年级</th>
+                            <th>班级</th>
+                            <th>班级名称</th>
+                            <th>学期</th>
+                            <th>班主任</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for class in classes %}
+                        <tr>
+                            <td>{{ class.get_grade_num_display }}</td>
+                            <td>{{ class.clas_num }}班</td>
+                            <td>{{ class.class_name }}</td>
+                            <td>{{ class.sem_ID.sem_name }}</td>
+                            <td>{{ class.headteacher.teacher_name }}</td>
+                            <td>
+                                <button class="btn btn-xs btn-warning edit-btn" 
+                                        data-id="{{ class.cla_ID }}"
+                                        data-grade="{{ class.grade_num }}"
+                                        data-class="{{ class.clas_num }}"
+                                        data-name="{{ class.class_name }}"
+                                        data-semester="{{ class.sem_ID.sem_ID }}"
+                                        data-teacher="{{ class.headteacher.tea_ID }}">
+                                    <span class="glyphicon glyphicon-edit"></span> 编辑
+                                </button>
+                                <a href="{% url 'delete_class' class.cla_ID %}" class="btn btn-xs btn-danger" 
+                                   onclick="return confirm('确定删除该班级吗？')">
+                                    <span class="glyphicon glyphicon-trash"></span> 删除
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">暂无班级数据</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 添加班级模态框 -->
+<div class="modal fade" id="addClassModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">添加班级</h4>
+            </div>
+            <form method="post" action="{% url 'add_class' %}">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>年级</label>
+                        <select class="form-control" name="grade_num" required>
+                            <option value="7">七年级</option>
+                            <option value="8">八年级</option>
+                            <option value="9">九年级</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>班级序号</label>
+                        <input type="number" class="form-control" name="clas_num" min="1" max="20" required>
+                    </div>
+                    <div class="form-group">
+                        <label>班级名称</label>
+                        <input type="text" class="form-control" name="class_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>学期</label>
+                        <select class="form-control" name="sem_ID" required>
+                            {% for semester in semesters %}
+                            <option value="{{ semester.sem_ID }}">{{ semester.sem_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>班主任</label>
+                        <select class="form-control" name="headteacher" required>
+                            {% for teacher in teachers %}
+                            <option value="{{ teacher.tea_ID }}">{{ teacher.teacher_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑班级模态框 (动态填充内容) -->
+<div class="modal fade" id="editClassModal" tabindex="-1" role="dialog">
+    <!-- 内容由JavaScript动态生成 -->
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // 编辑按钮点击事件
+    $('.edit-btn').click(function() {
+        let classId = $(this).data('id');
+        let grade = $(this).data('grade');
+        let classNum = $(this).data('class');
+        let className = $(this).data('name');
+        let semesterId = $(this).data('semester');
+        let teacherId = $(this).data('teacher');
+        
+        // 动态生成编辑模态框内容
+        let modalContent = `
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">编辑班级</h4>
+                </div>
+                <form method="post" action="/admin/update_class/${classId}/">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>年级</label>
+                            <select class="form-control" name="grade_num" required>
+                                <option value="7" ${grade === '7' ? 'selected' : ''}>七年级</option>
+                                <option value="8" ${grade === '8' ? 'selected' : ''}>八年级</option>
+                                <option value="9" ${grade === '9' ? 'selected' : ''}>九年级</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>班级序号</label>
+                            <input type="number" class="form-control" name="clas_num" 
+                                   value="${classNum}" min="1" max="20" required>
+                        </div>
+                        <div class="form-group">
+                            <label>班级名称</label>
+                            <input type="text" class="form-control" name="class_name" 
+                                   value="${className}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>学期</label>
+                            <select class="form-control" name="sem_ID" required>
+                                {% for semester in semesters %}
+                                <option value="{{ semester.sem_ID }}" 
+                                    ${semesterId === '{{ semester.sem_ID }}' ? 'selected' : ''}>
+                                    {{ semester.sem_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>班主任</label>
+                            <select class="form-control" name="headteacher" required>
+                                {% for teacher in teachers %}
+                                <option value="{{ teacher.tea_ID }}" 
+                                    ${teacherId === '{{ teacher.tea_ID }}' ? 'selected' : ''}>
+                                    {{ teacher.teacher_name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">保存修改</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        `;
+        
+        $('#editClassModal').html(modalContent).modal('show');
+    });
+});
+</script>
+{% endblock %}

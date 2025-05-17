@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}用户登录{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title text-center">用户登录</h3>
+            </div>
+            <div class="panel-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="username">用户名</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">密码</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label>用户类型</label>
+                        <div class="radio">
+                            <label><input type="radio" name="user_type" value="student" checked> 学生</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" name="user_type" value="teacher"> 教师</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" name="user_type" value="admin"> 管理员</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">登录</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}管理员首页{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>管理员控制台</h1>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">用户管理</h3>
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="{% url 'manage_students' %}" class="list-group-item">学生管理</a>
+                    <a href="{% url 'manage_teachers' %}" class="list-group-item">教师管理</a>
+                    <a href="{% url 'manage_teaching' %}" class="list-group-item">任课管理</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">班级管理</h3>
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="{% url 'manage_classes' %}" class="list-group-item">添加班级</a>
+                    <a href="{% url 'manage_classes' %}" class="list-group-item">更新班级</a>
+                    <a href="{% url 'manage_classes' %}" class="list-group-item">导出班级</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">成绩管理</h3>
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="{% url 'manage_scores' %}" class="list-group-item">成绩数据管理</a>
+                    <a href="{% url 'export_scores' %}" class="list-group-item">成绩导出</a>
+                    <a href="{% url 'lock_exam' %}" class="list-group-item">考试锁定</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">系统工具</h3>
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="{% url 'reset_password' %}" class="list-group-item">密码重置</a>
+                    <a href="{% url 'backup_database' %}" class="list-group-item">数据备份</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">系统概览</h3>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <div class="well">
+                    <h3>{{ student_count }}</h3>
+                    <p>在校学生</p>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="well">
+                    <h3>{{ teacher_count }}</h3>
+                    <p>在职教师</p>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="well">
+                    <h3>{{ class_count }}</h3>
+                    <p>班级数量</p>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="well">
+                    <h3>{{ exam_count }}</h3>
+                    <p>考试记录</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

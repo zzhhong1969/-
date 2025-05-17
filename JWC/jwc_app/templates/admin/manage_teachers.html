@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+
+{% block title %}教师管理{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>教师管理</h1>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">教师列表</h3>
+    </div>
+    <div class="panel-body">
+        <form method="post" enctype="multipart/form-data" class="form-inline" style="margin-bottom: 20px;">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="file" name="excel_file" required>
+            </div>
+            <button type="submit" class="btn btn-primary">批量导入</button>
+            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addTeacherModal">添加教师</a>
+
+        </form>
+        
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr class="info">
+                        <th>工号</th>
+                        <th>姓名</th>
+                        <th>性别</th>
+                        <th>专业</th>
+                        <th>学历</th>
+                        <th>入校时间</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in teachers %}
+                    <tr>
+                        <td>{{ teacher.tea_ID }}</td>
+                        <td>{{ teacher.teacher_name }}</td>
+                        <td>{% if teacher.gender == '1' %}男{% else %}女{% endif %}</td>
+                        <td>{{ teacher.major }}</td>
+                        <td>{{ teacher.education }}</td>
+                        <td>{{ teacher.join_date }}</td>
+                        <td>{% if teacher.is_working %}在职{% else %}离职{% endif %}</td>
+                        <td>
+                            <a href="#" class="btn btn-xs btn-info " data-toggle="modal" data-target="#editTeacherModal" data-id={{ teacher.tea_ID }}>编辑</a>
+                            <a href="#" class="btn btn-xs btn-danger">删除</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 添加教师模态框 -->
+<div class="modal fade" id="addTeacherModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">添加教师</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="addTeacherForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>工号</label>
+                        <input type="text" class="form-control" name="tea_ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label>姓名</label>
+                        <input type="text" class="form-control" name="teacher_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>性别</label>
+                        <select class="form-control" name="gender">
+                            <option value="1">男</option>
+                            <option value="2">女</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>专业</label>
+                        <input type="text" class="form-control" name="major">
+                    </div>
+                    <div class="form-group">
+                        <label>学历</label>
+                        <input type="text" class="form-control" name="education">
+                    </div>
+                    <div class="form-group">
+                        <label>入校时间</label>
+                        <input type="date" class="form-control" name="join_date" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="saveTeacher">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 编辑教师模态框 -->
+    <div class="modal fade" id="editTeacherModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">修改教师</h4>
+            </div>
+            <div class="modal-body">
+                <form method="post" id="addTeacherForm">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>工号</label>
+                        <input type="text" class="form-control" name="tea_ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label>姓名</label>
+                        <input type="text" class="form-control" name="teacher_name"  required>
+                    </div>
+                    <div class="form-group">
+                        <label>性别</label>
+                        <select class="form-control" name="gender">
+                            <option value="1">男</option>
+                            <option value="2">女</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>专业</label>
+                        <input type="text" class="form-control" name="major">
+                    </div>
+                    <div class="form-group">
+                        <label>学历</label>
+                        <input type="text" class="form-control" name="education">
+                    </div>
+                    <div class="form-group">
+                        <label>入校时间</label>
+                        <input type="date" class="form-control" name="join_date" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="save_edit_Teacher">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    $('#saveTeacher').click(function() {
+        $('#addTeacherForm').submit();
+    });
+    $('#save_edit_Teacher').click(function() {
+        $('#editTeacherForm').submit();
+    });
+});
+</script>
+{% endblock %}
+{% endblock %}

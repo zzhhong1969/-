@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>编辑班级：{{ class_obj.name }}</h2>
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <label for="name">班级名称：</label>
+        <input type="text" id="name" name="name" value="{{ class_obj.name }}" required>
+    </div>
+    <div>
+        <label for="grade">年级：</label>
+        <input type="text" id="grade" name="grade" value="{{ class_obj.grade }}" required>
+    </div>
+    <div>
+        <label for="teacher">班主任：</label>
+        <select id="teacher" name="teacher">
+            <option value="">-- 无 --</option>
+            {% for teacher in teachers %}
+                <option value="{{ teacher.id }}" 
+                    {% if class_obj.teacher and teacher.id == class_obj.teacher.id %}selected{% endif %}>
+                    {{ teacher.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">保存</button>
+    <a href="{% url 'manage_classes' %}" class="btn btn-secondary">取消</a>
+</form>
+{% endblock %}

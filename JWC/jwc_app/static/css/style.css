@@ -1,0 +1,30 @@
+/* 自定义样式 */
+.navbar-brand {
+    padding: 15px;
+}
+
+.panel-heading h3 {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.table-responsive {
+    margin-top: 20px;
+}
+
+.well {
+    margin-bottom: 0;
+}
+
+.footer {
+    margin-top: 20px;
+    padding: 20px 0;
+    border-top: 1px solid #eee;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .navbar-nav {
+        margin: 0 -15px;
+    }
+}

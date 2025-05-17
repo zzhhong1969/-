@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}班级成绩 - {{ class_obj.class_name }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>班级成绩 <small>{{ class_obj.class_name }} - {{ exam.exam_type }}</small></h1>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">成绩列表</h3>
+    </div>
+    <div class="panel-body">
+        {% if score_data %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr class="info">
+                        <th>学号</th>
+                        <th>姓名</th>
+                        {% for course in courses %}
+                        <th>{{ course.course_name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in score_data %}
+                    <tr>
+                        <td>{{ data.student.stu_ID }}</td>
+                        <td>{{ data.student.student_name }}</td>
+                        {% for score in data.scores %}
+                        <td>{{ score|default_if_none:"--" }}</td>
+                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">暂无成绩记录</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

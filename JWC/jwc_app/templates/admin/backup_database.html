@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}数据备份{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>数据备份</h1>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">数据库备份</h3>
+    </div>
+    <div class="panel-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="alert alert-info">
+                <p>点击下方按钮将数据库结构和数据备份到本地</p>
+            </div>
+            <button type="submit" class="btn btn-primary">备份数据库</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

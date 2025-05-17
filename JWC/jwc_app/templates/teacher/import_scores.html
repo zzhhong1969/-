@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}导入成绩{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>导入成绩</h1>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">选择文件和科目</h3>
+    </div>
+    <div class="panel-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="exam_id">考试类别</label>
+                <select class="form-control" id="exam_id" name="exam_id" required>
+                    <option value="">-- 请选择 --</option>
+                    {% for exam in exams %}
+                        <option value="{{ exam.exam_ID }}">{{ exam.exam_type }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="course_id">科目</label>
+                <select class="form-control" id="course_id" name="course_id" required>
+                    <option value="">-- 请选择 --</option>
+                    {% for course in courses %}
+                        <option value="{{ course.course_ID }}">{{ course.course_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="excel_file">Excel文件</label>
+                <input type="file" id="excel_file" name="excel_file" required>
+                <p class="help-block">请上传填写好的成绩Excel文件</p>
+            </div>
+            <button type="submit" class="btn btn-primary">导入</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

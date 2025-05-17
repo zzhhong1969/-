@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}我的成绩 - {{ exam.exam_type }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>我的成绩 <small>{{ exam.exam_type }}</small></h1>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">成绩详情</h3>
+    </div>
+    <div class="panel-body">
+        {% if scores %}
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr class="info">
+                        <th>科目</th>
+                        <th>成绩</th>
+                        <th>班级排名</th>
+                        <th>年级排名</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for score in scores %}
+                    <tr>
+                        <td>{{ score.cou_ID.course_name }}</td>
+                        <td>{{ score.score }}</td>
+                        <td>--</td>
+                        <td>--</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">暂无成绩记录</div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

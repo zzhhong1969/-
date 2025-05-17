@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}导出班级数据{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-header">导出班级数据</h1>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">导出选项</h3>
+        </div>
+
+        <div class="panel-body">
+            <form method="post" action="{% url 'export_classes' %}" class="form-horizontal">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">导出范围</label>
+                    <div class="col-sm-10">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="export_scope" value="all" checked> 全部班级
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="export_scope" value="grade"> 按年级
+                            </label>
+                            <select class="form-control" name="grade_num" style="width: 150px; display: inline-block; margin-left: 10px;">
+                                <option value="7">七年级</option>
+                                <option value="8">八年级</option>
+                                <option value="9">九年级</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">导出格式</label>
+                    <div class="col-sm-10">
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="export_format" value="excel" checked> Excel (.xlsx)
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label>
+                                <input type="radio" name="export_format" value="csv"> CSV
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">包含字段</label>
+                    <div class="col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="fields" value="cla_ID" checked> 班级ID
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="fields" value="grade_num" checked> 年级
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="fields" value="clas_num" checked> 班级序号
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="fields" value="class_name" checked> 班级名称
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="fields" value="sem_ID" checked> 学期
+                            </label>
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="fields" value="headteacher" checked> 班主任
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button type="submit" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-download"></span> 开始导出
+                        </button>
+                        <a href="{% url 'manage_classes' %}" class="btn btn-default">返回</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if export_status %}
+    <div class="alert alert-{{ export_status.type }} alert-dismissible" style="margin-top: 20px;">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>{{ export_status.title }}</strong> {{ export_status.message }}
+        {% if export_status.download_url %}
+        <p style="margin-top: 10px;">
+            <a href="{{ export_status.download_url }}" class="btn btn-success btn-sm">
+                <span class="glyphicon glyphicon-save"></span> 下载文件
+            </a>
+        </p>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-horizontal .radio, .form-horizontal .checkbox {
+        padding-top: 0;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+    .form-horizontal .radio label, .form-horizontal .checkbox label {
+        padding-left: 25px;
+    }
+</style>
+{% endblock %}
